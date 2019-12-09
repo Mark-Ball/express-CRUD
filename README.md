@@ -204,3 +204,36 @@ The most basic implementation of the show page simply displays the information f
 Setting up the delete the put/patch methods is more complex than setting up the show method because we must handle overriding methods in our HTML forms. We must do this because HTML5 does not recognise DELETE, PUT or PATCH has methods.
 
 ## 6. Update method
+
+## 7. Implement MongoDB
+
+To implement MongoDB we will follow these steps:
+- create the database (use CRUDinExpress)
+- install the mongoose dependency and add the extra code into app.js
+- create the schema
+- create the model
+- set up the controller to use the model
+
+### 7.1 Create the database
+
+I did this in the shell, although it could be done programatically.
+
+> mongod
+> mongo
+> use CRUDinExpress
+
+### 7.2 Install mongoose
+
+Install mongoose dependencies
+> npm i mongoose --save
+
+Add code to app.js
+```Javascript
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/contact_app", { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", error => console.log(error));
+```
+
+### 7.3 Install the schema
+
