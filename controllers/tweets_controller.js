@@ -1,11 +1,20 @@
+const TweetModel = require("./../database/models/tweets_model");
+
 let tweets = [
     { tweet: "I'm a tweet", name: "Mark" },
     { tweet: "I'm the second tweet", name: "Bruce" }
 ];
 
 const index = (req, res) => {
-    res.render('tweets/index', { tweets });
+    TweetModel.find()
+        .then(tweets => {
+            res.render('tweets/index', { tweets });
+        })
 }
+
+// const index = (req, res) => {
+//     res.render('tweets/index', { tweets });
+// }
 
 const tweetForm = (req, res) => {
     res.render('tweets/form');

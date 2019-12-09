@@ -262,3 +262,18 @@ module.exports = ContactSchema;
 
 ### 7.4 Create the model
 
+Create a directory for models inside the database directory. Inside the new directory, create the model file tweets_model.js.
+
+Put the following inside tweets_model.js.
+
+```Javascript
+const mongoose = require("mongoose");
+const TweetSchema = require("./../schemas/tweets_schema");
+
+const TweetModel = mongoose.model("tweet", TweetSchema);
+
+module.exports = TweetModel;
+```
+
+### 7.5 Set up the controller to use the model
+
