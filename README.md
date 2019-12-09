@@ -81,9 +81,18 @@ For our index route, we will use:
 router.get("/tweets", TweetsController.index)
 ```
 
-Lastly, we export our routes so they may be used in app.js.
+We export our routes so they may be used in app.js.
 ```Javascript
 module.exports = router;
+```
+
+Lastly we must modify app.js to use the routes. Firstly we require the routes in.
+```Javascript
+const routes = require('./routes')
+```
+Secondly we use the routes.
+```Javascript
+app.use(routes)
 ```
 
 ### 3.2 Controller
@@ -125,7 +134,8 @@ app.use(bodyParser.json());
 We also need to add the directory structure required by handlebars:
 app.js
 └── views
-    ├── index.handlebars
+    ├── tweets
+    |   └──index.handlebars
     └── layouts
         └── main.handlebars
 
