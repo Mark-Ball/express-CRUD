@@ -5,6 +5,9 @@ const routes = require('./routes')
 const app = express();
 const port = 3000;
 
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 

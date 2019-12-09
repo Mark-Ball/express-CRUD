@@ -19,12 +19,19 @@ const create = (req, res) => {
 
 const show = (req, res) => {
     let tweet = tweets[req.params.id];
-    res.render('tweets/show', { tweet });
+    let id = req.params.id;
+    res.render('tweets/show', { tweet, id });
+}
+
+const destroy = (req, res) => {
+    tweets.splice(req.params.id, 1);
+    res.redirect('/tweets');
 }
 
 module.exports = {
     index,
     tweetForm,
     create,
-    show
+    show,
+    destroy
 }
