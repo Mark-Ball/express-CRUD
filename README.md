@@ -58,6 +58,8 @@ Our application will use MVC architecture. For this we need to create:
 - views
 - controller(s)
 
+For now, we will set up our app without a database, and add MongoDB later. This means we will not worry about the models for now.
+
 ### 3.1 Routes
 
 Create a file called routes.js. To start with, we will set up an 'index route' to show all of our tweets (although right now we don't have any).
@@ -84,11 +86,30 @@ Lastly, we export our routes so they may be used in app.js.
 module.exports = router;
 ```
 
+### 3.2 Controller
 
+First we create a new directory to hold our controller, then the controller (tweets_controller.js) itself.
 
-For now, we will set up our app without a database, and add MongoDB later. This means we will not worry about the models for now.
+In tweets_controller.js we declare the variable which will hold all our tweets.
+```Javascript
+let tweets = [];
+```
+Then we can write the functions which will be called by routes.js. For now, we need to write an index function to display all our tweets.
+```Javascript
+const index = (req, res) => {
+    res.render('tweets/index', { tweets });
+}
+```
+Lastly we must export the index function so it is available in the routes.
+```Javascript
+module.exports = {
+    index
+}
+```
 
-We need to add the functionality for views. For this we must implement handlebars. In app.js, include the following at the top of the script.
+### 3.3 Views
+
+For views, we are implementing handlebars. In app.js, include the following at the top of the script.
 ```Javascript
 const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
@@ -126,7 +147,3 @@ Main.handlebars is filled with the following boilerplate:
 
 </html>
 ```
-
-
-
-This app will be a CRUD resource for tweets, so we include a tweets controller.
