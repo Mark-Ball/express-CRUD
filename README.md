@@ -235,5 +235,30 @@ mongoose.Promise = global.Promise;
 mongoose.connection.on("error", error => console.log(error));
 ```
 
-### 7.3 Install the schema
+### 7.3 Create the schema
+
+Create the database directory, with the schemas directory inside of it, with the schema file inside of that.
+> tweets_schema.js
+
+Inside tweets_schema.js:
+
+```Javascript
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const ContactSchema = new Schema({
+  tweet: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
+module.exports = ContactSchema;
+```
+
+### 7.4 Create the model
 
