@@ -9,5 +9,6 @@ router.get("/tweets/new", TweetsController.tweetForm);
 router.post("/tweets", TweetsController.create);
 router.get("/tweets/:id", TweetsController.show);
 router.delete("/tweets/:id", TweetsController.destroy);
+router.put("/tweets/:id", TweetsController.update);
 
 module.exports = router;

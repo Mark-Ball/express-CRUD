@@ -28,10 +28,16 @@ const destroy = (req, res) => {
     res.redirect('/tweets');
 }
 
+const update = (req, res) => {
+    tweets[req.params.id].tweet = req.body.tweet;
+    res.redirect("/tweets");
+}
+
 module.exports = {
     index,
     tweetForm,
     create,
     show,
-    destroy
+    destroy,
+    update
 }
