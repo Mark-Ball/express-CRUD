@@ -1,5 +1,6 @@
 let tweets = [
-    { tweet: "I'm a tweet", name: "Mark" }
+    { tweet: "I'm a tweet", name: "Mark" },
+    { tweet: "I'm the second tweet", name: "Bruce" }
 ];
 
 const index = (req, res) => {
@@ -11,14 +12,19 @@ const tweetForm = (req, res) => {
 }
 
 const create = (req, res) => {
-    console.log(req.body);
     let { name, tweet } = req.body;
     tweets.push({name, tweet});
     res.redirect('/tweets');
 }
 
+const show = (req, res) => {
+    let tweet = tweets[req.params.id];
+    res.render('tweets/show', { tweet });
+}
+
 module.exports = {
     index,
     tweetForm,
-    create
+    create,
+    show
 }
