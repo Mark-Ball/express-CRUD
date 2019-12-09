@@ -157,3 +157,50 @@ Main.handlebars is filled with the following boilerplate:
 
 </html>
 ```
+
+## 4. Show method
+
+Setting up the show method is more complex than index because we must handle the params variable to make sure we are showing the correct tweet. We need to create the following:
+- a route
+- the show page (with handlebars)
+- the show method in the controller
+
+### 4.1 The route
+
+In router.js:
+```Javascript
+router.get("/tweets/:id", TweetsController.show);
+```
+
+### 4.2 The Show method
+
+Our show method uses the params which are automatically passed in the req object. In this case, our route has a wildcard (:id) which is intended to be a number. We have used the name id, so the value will come through in params as a key-value pair with the key of id:
+```
+params: { id: 1 }
+```
+
+The id value in params can then be used to access the correct object inside the tweets array. Lastly, the tweet and the id are passed to the view.
+
+In tweets_controller.js:
+```Javascript
+const show = (req, res) => {
+    let tweet = tweets[req.params.id];
+    let id = req.params.id;
+    res.render('tweets/show', { tweet, id });
+}
+```
+
+Remember to add 'show' to the list of exported functions.
+
+### 4.3 The Show page
+
+The most basic implementation of the show page simply displays the information from the tweet which was passed to it from the Show method of the tweets controller. Handlebars double-curly-brace notation is used to access the variables passed, like so:
+```
+{{tweet.tweet}} - {{tweet.name}}
+```
+
+## 5. Delete method
+
+Setting up the delete the put/patch methods is more complex than setting up the show method because we must handle overriding methods in our HTML forms. We must do this because HTML5 does not recognise DELETE, PUT or PATCH has methods.
+
+## 6. Update method
