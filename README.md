@@ -203,6 +203,8 @@ The most basic implementation of the show page simply displays the information f
 
 Setting up the delete the put/patch methods is more complex than setting up the show method because we must handle overriding methods in our HTML forms. We must do this because HTML5 does not recognise DELETE, PUT or PATCH has methods.
 
+
+
 ## 6. Update method
 
 ## 7. Implement MongoDB
@@ -277,3 +279,9 @@ module.exports = TweetModel;
 
 ### 7.5 Set up the controller to use the model
 
+Require in the model:
+```Javascript
+const TweetModel = require("./../database/models/tweets_model");
+```
+
+Modify the methods to read, create, update, or delete from the database instead of an array.

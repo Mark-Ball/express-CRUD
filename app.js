@@ -6,7 +6,10 @@ const app = express();
 const port = 3000;
 
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/CRUDinExpress", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/CRUDinExpress", { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 mongoose.Promise = global.Promise;
 mongoose.connection.on("error", error => console.log(error));
 

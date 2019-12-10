@@ -5,16 +5,14 @@ let tweets = [
     { tweet: "I'm the second tweet", name: "Bruce" }
 ];
 
-const index = (req, res) => {
-    TweetModel.find()
-        .then(tweets => {
-            res.render('tweets/index', { tweets });
-        })
+const index = async (req, res) => {
+    try {
+        let tweets = await TweetModel.find();
+        res.render('tweets/index', { tweets });
+    } catch(err) {
+        return res.status(500).send(`Error: ${err}`);
+    }
 }
-
-// const index = (req, res) => {
-//     res.render('tweets/index', { tweets });
-// }
 
 const tweetForm = (req, res) => {
     res.render('tweets/form');
