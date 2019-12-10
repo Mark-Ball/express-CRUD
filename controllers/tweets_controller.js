@@ -24,15 +24,16 @@ const create = async (req, res) => {
     res.redirect('/tweets');
 }
 
-const show = async (req, res) => { // need to adjust this method to read the mongodb id
+const show = async (req, res) => {
     let id = req.params.id;
     let tweet = await TweetModel.findById(id);
     res.render('tweets/show', { tweet, id });
 }
 
 const destroy = (req, res) => {
-    tweets.splice(req.params.id, 1);
-    res.redirect('/tweets');
+    console.log("destroy hit");
+    // tweets.splice(req.params.id, 1);
+    // res.redirect('/tweets');
 }
 
 const update = (req, res) => {

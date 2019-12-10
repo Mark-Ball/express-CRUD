@@ -2,6 +2,6 @@
 
 <ul>
     {{#each tweets}}
-    <li>{{this.tweet}} - {{this.name}} <a href="/tweets/{{this._id}}">Show</a></li>
+    <li>{{this.tweet}} - {{this.name}} <a href="/tweets/{{this._id}}">Show</a> <a href="/tweets/{{this._id}}?_method=DELETE">Destroy</a></li>
     {{/each}}
 </ul>
