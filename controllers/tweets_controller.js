@@ -18,9 +18,8 @@ const tweetForm = (req, res) => {
     res.render('tweets/form');
 }
 
-const create = (req, res) => {
-    let { name, tweet } = req.body;
-    tweets.push({name, tweet});
+const create = async (req, res) => {
+    await TweetModel.create(req.body);
     res.redirect('/tweets');
 }
 
