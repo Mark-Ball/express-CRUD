@@ -8,6 +8,7 @@ let tweets = [
 const index = async (req, res) => {
     try {
         let tweets = await TweetModel.find();
+        console.log(tweets);
         res.render('tweets/index', { tweets });
     } catch(err) {
         return res.status(500).send(`Error: ${err}`);
@@ -23,9 +24,9 @@ const create = async (req, res) => {
     res.redirect('/tweets');
 }
 
-const show = (req, res) => {
-    let tweet = tweets[req.params.id];
+const show = async (req, res) => { // need to adjust this method to read the mongodb id
     let id = req.params.id;
+    let tweet = await TweetModel.findById(id);
     res.render('tweets/show', { tweet, id });
 }
 
