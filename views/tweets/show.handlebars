@@ -1,6 +1,6 @@
 <h1>Show page</h1>
 
-{{tweet.tweet}} - {{tweet.name}}
+{{tweet.message}} - {{tweet.user.name}}
 
 <h3>Do you want to edit this tweet?</h3>
 <form method="POST" action="/tweets/{{id}}?_method=PUT">

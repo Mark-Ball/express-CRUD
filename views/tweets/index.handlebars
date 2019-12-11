@@ -1,7 +1,9 @@
 <h1>Tweets index</h1>
 
+<a href="/tweets/new">Create a new tweet</a>
+
 <ul>
     {{#each tweets}}
-    <li>{{this.tweet}} - {{this.name}} <a href="/tweets/{{this._id}}">Show</a> <a href="/tweets/{{this._id}}?_method=DELETE">Destroy</a></li>
+    <li>{{this.message}} <a href="/tweets/{{this._id}}">Show</a> <a href="/tweets/{{this._id}}?_method=DELETE">Destroy</a></li>
     {{/each}}
 </ul>

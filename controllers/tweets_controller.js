@@ -1,4 +1,5 @@
 const TweetModel = require("./../database/models/tweets_model");
+const UserModel = require("./../database/models/users_model");
 
 const index = async (req, res) => {
     try {
@@ -9,18 +10,20 @@ const index = async (req, res) => {
     }
 }
 
-const tweetForm = (req, res) => {
-    res.render('tweets/form');
+const tweetForm = async (req, res) => {
+    const users = await UserModel.find().select("_id name");
+    res.render('tweets/form', { users });
 }
 
 const create = async (req, res) => {
-    await TweetModel.create(req.body);
+    let { message, user } = req.body;
+    await TweetModel.create({ message, user });
     res.redirect('/tweets');
 }
 
 const show = async (req, res) => {
     let id = req.params.id;
-    let tweet = await TweetModel.findById(id);
+    let tweet = await TweetModel.findById(id).populate("user");
     res.render('tweets/show', { tweet, id });
 }
 
