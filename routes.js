@@ -15,5 +15,6 @@ router.put("/tweets/:id", TweetsController.update);
 
 // Users routes
 router.get("/users", UsersController.index);
+router.get("/users/new", UsersController.userForm);
 
 module.exports = router;
