@@ -5,12 +5,17 @@ const index = async (req, res) => {
     res.render("users/index", { users });
 }
 
-// now to create a new user
 const userForm = (req, res) => {
     res.render("users/form");
 }
 
+const create = async (req, res) => {
+    await UserModel.create(req.body)
+    res.redirect("/users");
+}
+
 module.exports = {
     index,
-    userForm
+    userForm,
+    create
 }
