@@ -14,8 +14,15 @@ const create = async (req, res) => {
     res.redirect("/users");
 }
 
+const show = async (req, res) => {
+    const id = req.params.id;
+    const user = await UserModel.findById(id);
+    res.render("users/show", { user });
+}
+
 module.exports = {
     index,
     userForm,
-    create
+    create,
+    show
 }
