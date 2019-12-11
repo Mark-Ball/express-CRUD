@@ -8,7 +8,6 @@ let tweets = [
 const index = async (req, res) => {
     try {
         let tweets = await TweetModel.find();
-        console.log(tweets);
         res.render('tweets/index', { tweets });
     } catch(err) {
         return res.status(500).send(`Error: ${err}`);
@@ -30,10 +29,9 @@ const show = async (req, res) => {
     res.render('tweets/show', { tweet, id });
 }
 
-const destroy = (req, res) => {
-    console.log("destroy hit");
-    // tweets.splice(req.params.id, 1);
-    // res.redirect('/tweets');
+const destroy = async (req, res) => {
+    await TweetModel.findByIdAndRemove(req.params.id);
+    res.redirect('/tweets');
 }
 
 const update = (req, res) => {

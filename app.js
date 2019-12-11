@@ -14,7 +14,7 @@ mongoose.Promise = global.Promise;
 mongoose.connection.on("error", error => console.log(error));
 
 const methodOverride = require('method-override');
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method', { methods: ["POST", "GET"] }));
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
