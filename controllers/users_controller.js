@@ -20,9 +20,15 @@ const show = async (req, res) => {
     res.render("users/show", { user });
 }
 
+const destroy = async (req, res) => {
+    await UserModel.findByIdAndRemove(req.params.id);
+    res.redirect("/users");
+}
+
 module.exports = {
     index,
     userForm,
     create,
-    show
+    show,
+    destroy
 }
