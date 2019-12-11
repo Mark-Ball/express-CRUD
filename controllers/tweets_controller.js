@@ -1,10 +1,5 @@
 const TweetModel = require("./../database/models/tweets_model");
 
-let tweets = [
-    { tweet: "I'm a tweet", name: "Mark" },
-    { tweet: "I'm the second tweet", name: "Bruce" }
-];
-
 const index = async (req, res) => {
     try {
         let tweets = await TweetModel.find();
