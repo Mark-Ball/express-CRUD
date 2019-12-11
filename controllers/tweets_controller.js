@@ -34,8 +34,8 @@ const destroy = async (req, res) => {
     res.redirect('/tweets');
 }
 
-const update = (req, res) => {
-    tweets[req.params.id].tweet = req.body.tweet;
+const update = async (req, res) => {
+    await TweetModel.findByIdAndUpdate(req.params.id, req.body);
     res.redirect("/tweets");
 }
 
