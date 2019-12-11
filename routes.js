@@ -19,5 +19,6 @@ router.get("/users/new", UsersController.userForm);
 router.post("/users", UsersController.create);
 router.get("/users/:id", UsersController.show);
 router.delete("/users/:id", UsersController.destroy);
+router.put("/users/:id", UsersController.update);
 
 module.exports = router;

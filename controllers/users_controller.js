@@ -25,10 +25,17 @@ const destroy = async (req, res) => {
     res.redirect("/users");
 }
 
+const update = async (req, res) => {
+    const id = req.params.id;
+    await UserModel.findByIdAndUpdate(id, req.body);
+    res.redirect(`/users/${id}`);
+}
+
 module.exports = {
     index,
     userForm,
     create,
     show,
-    destroy
+    destroy,
+    update
 }
