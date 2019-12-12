@@ -6,7 +6,7 @@ Begin by creating the package-json file.
 ```Javascript
 npm init -y
 ```
-Then install the dependencies: express, express-handlebars, nodemon, body-parser, and forever. The syntax for installing express is provided below.
+Then install the dependencies: express, express-handlebars, nodemon, body-parser, forever, mongoose, and method-override. The syntax for installing express is provided below.
 ```Javascript
 npm i express
 ```
@@ -15,23 +15,41 @@ Express is used as the framework for the web application, express-handlebars is 
 
 Remember to add a .gitignore file so that node_modules are not pushed up to github.
 
-## 2. Set up app.js for basic functionality
+## 2. Set up app.js
 
 App.js is set up so that our server can communicate with traffic from the internet. Our first step is to create the app.js file. As we are calling our main file app.js, not index.js, we must change the "main": in line 5 of package.json.
-```JSON
+```
 "main": "app.js"
 ```
 
-Then we set up app.js with the following:
+Then we set up app.js with the following required by our web server, express.
 ```Javascript
 const express = require("express");
 const app = express();
 const port = 3000;
 ```
 
-Then set up a basic route at the root to send back "Hello world":
+Next we must set up our middleware, which sits between the functions in our app and the database. These have been installed in Step 1 of the setup, and now must be required into app.js and set up.
 ```Javascript
-app.get("/", (req, res) => {res.send("Hello world")})
+const exphbs = require("express-handlebars");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const methodOverride = require('method-override');
+
+mongoose.connect("mongodb://localhost/CRUDinExpress", { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", error => console.log(error));
+
+app.use(methodOverride('_method', { methods: ["POST", "GET"] }));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 ```
 
 Then set up the app to listed on a port:
@@ -50,38 +68,70 @@ The server can be run using:
 npm run dev
 ```
 
-## 3. Setting up the structure
+## 3. Set up the schema and model
 
-Our application will use MVC architecture. For this we need to create:
-- routes
-- models
-- views
-- controller(s)
+Create the directories which will hold our schema and model: 'database' directory in the root, 'models' and 'schemas' directory inside it.
 
-For now, we will set up our app without a database, and add MongoDB later. This means we will not worry about the models for now.
+### 3.1 The schema
 
-### 3.1 Routes
+Create the schema file inside the schemas directory. For a collection called tweets, the schema would be called ```tweets_schema.js```.
 
-Create a file called routes.js. To start with, we will set up an 'index route' to show all of our tweets (although right now we don't have any).
+The schema file should look like this. Don't forget to export the schema.
+```Javascript
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-Firstly we must require some files into routes.js:
+const ContactSchema = new Schema({
+  message: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
+module.exports = ContactSchema;
+```
+
+### 3.2 The model
+
+Create the model file inside the models directory. For a collection called tweets, the model would be called ```tweets_model.js```.
+
+The model file should look like this. Don't forget to export the model. In the variable declaration for TweetModel, the first argument ('tweet') refers to the name of the collection this is a model for.
+```Javascript
+const mongoose = require("mongoose");
+const TweetSchema = require("./../schemas/tweets_schema");
+
+const TweetModel = mongoose.model("tweet", TweetSchema);
+
+module.exports = TweetModel;
+```
+
+## 4. Setting up the structure
+
+Our application will use MVC architecture. This section will focus on setting up the controller and routes, which are necessary for every function. Views and the logic specific to each function will be described in the following section.
+
+### 4.1 The controller
+
+First we create a new directory to hold our controller, then the controller ```tweets_controller.js``` itself.
+
+Before we write any functions, we must require in any models we will be using. For the tweets controller, we will be using the tweets model at the very least.
+```Javascript
+const TweetModel = require("./../database/models/tweets_model");
+```
+
+### 4.2  The routes
+
+Create a file called routes.js in the root of the project. We must require express into this file and set up a variable called router. We must also require in the controller(s) we will be using to have access to their methods. For now we only have a tweets controller, but if we had more we would require those too.
 ```Javascript
 const express = require('express');
 const router = express.Router();
 const TweetsController = require("./controllers/tweets_controller");
 ```
-Note that we have not created tweets_controller yet, but we will.
 
-We set up our routes using the same basic formula:
-```
-router.{verb}({path}, {method})
-```
-For our index route, we will use:
-```Javascript
-router.get("/tweets", TweetsController.index)
-```
-
-We export our routes so they may be used in app.js.
+Although we do not have any routes yet, we export them for use later.
 ```Javascript
 module.exports = router;
 ```
@@ -93,69 +143,6 @@ const routes = require('./routes')
 Secondly we use the routes.
 ```Javascript
 app.use(routes)
-```
-
-### 3.2 Controller
-
-First we create a new directory to hold our controller, then the controller (tweets_controller.js) itself.
-
-In tweets_controller.js we declare the variable which will hold all our tweets.
-```Javascript
-let tweets = [];
-```
-Then we can write the functions which will be called by routes.js. For now, we need to write an index function to display all our tweets.
-```Javascript
-const index = (req, res) => {
-    res.render('tweets/index', { tweets });
-}
-```
-Lastly we must export the index function so it is available in the routes.
-```Javascript
-module.exports = {
-    index
-}
-```
-
-### 3.3 Views
-
-For views, we are implementing handlebars. In app.js, include the following at the top of the script.
-```Javascript
-const bodyParser = require("body-parser");
-const exphbs = require("express-handlebars");
-```
-And below that, include the following:
-```Javascript
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-```
-We also need to add the directory structure required by handlebars:
-app.js
-└── views
-    ├── tweets
-    |   └──index.handlebars
-    └── layouts
-        └── main.handlebars
-
-Main.handlebars is filled with the following boilerplate:
-```HTML
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
-    {{{body}}}
-</body>
-
-</html>
 ```
 
 ## 4. Show method
