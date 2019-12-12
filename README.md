@@ -285,3 +285,67 @@ const TweetModel = require("./../database/models/tweets_model");
 ```
 
 Modify the methods to read, create, update, or delete from the database instead of an array.
+
+## 8. Normalising
+
+Normalising is the process of linking two collections. Although MongoDB is a document (i.e. non-relational) database, collections may still be linked so that one collection can be called via another using syntax similar to relational databases. E.g.
+
+> tweet.user.name
+
+The logic of normalising is:
+- add the users into the tweets schema
+- update controller to pass users to the view
+- add a dropdown of users to the form to create tweets
+- update create function to accept the new user information from the form
+- update show to display the new user information
+
+### 8.1 Add key to schema
+
+A key for the second collection must be added to the first. In our example above, we want to associate the user collection with the tweet collection, so we must add the user key into the tweet schema.
+
+```Javascript
+user : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user"
+}
+```
+
+### 8.2 Update tweetForm method to pass users information to the view
+
+We want the view to be able to render a dropdown of all users in our database, so that new tweets can be associated with an existing user.
+
+The method we are using to display our form should look like the following:
+```Javascript
+const tweetForm = async (req, res) => {
+    const users = await UserModel.find().select("_id name");
+    res.render('tweets/form', { users });
+}
+```
+
+### 8.3 Add dropdown of users to the form
+
+We iterate over the user object passed from the controller and show the names in a dropdown. Note that the value passed back to the controller from the form is the _id of the user, not the user's name itself.
+```HTML
+<div>
+    <label for="user">User</label>
+    <select name="user">
+        {{#each users}}
+        <option value="{{this._id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+```
+
+### 8.4 Update create function to use the new user information
+
+### 8.5 Update show to display the new user information
+
+This has 2 steps. First is to pass the new user information to the view from the controller. To do this we use  ```.populate("user")``` to make an additional query for the user related to the tweet found with ```.findByIdP(id)```.
+
+```Javascript
+const show = async (req, res) => {
+    let id = req.params.id;
+    let tweet = await TweetModel.findById(id).populate("user");
+    res.render('tweets/show', { tweet, id });
+}
+```

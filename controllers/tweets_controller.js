@@ -33,8 +33,10 @@ const destroy = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    await TweetModel.findByIdAndUpdate(req.params.id, req.body);
-    res.redirect("/tweets");
+    const id = req.params.id;
+    await TweetModel.findByIdAndUpdate(id, req.body);
+    // req.body
+    res.redirect(`/tweets/${id}`);
 }
 
 module.exports = {
