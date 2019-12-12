@@ -338,9 +338,19 @@ We iterate over the user object passed from the controller and show the names in
 
 ### 8.4 Update create function to use the new user information
 
-### 8.5 Update show to display the new user information
+We must now update the ```create``` method in the ```tweets_controller``` to enter the user information.
 
-This has 2 steps. First is to pass the new user information to the view from the controller. To do this we use  ```.populate("user")``` to make an additional query for the user related to the tweet found with ```.findByIdP(id)```.
+```Javascript
+const create = async (req, res) => {
+    let { message, user } = req.body;
+    await TweetModel.create({ message, user });
+    res.redirect('/tweets');
+}
+```
+
+### 8.5 Update show method in the tweets controller
+
+We must pass the user information to the view from the controller so we can show the user on the show page for tweets. To do this we use  ```.populate("user")``` to make an additional query for the user related to the tweet found with ```.findByIdP(id)```.
 
 ```Javascript
 const show = async (req, res) => {
@@ -349,3 +359,11 @@ const show = async (req, res) => {
     res.render('tweets/show', { tweet, id });
 }
 ```
+
+### 8.6 Update the show view to display the user information
+
+The final step is to display the user on the view for tweets. Because we have set up the association in the tweet schema, we can call for the user through the tweet like so:
+```Javascript
+{{tweet.user.name}}
+```
+Note that we only passed tweet to the view from the show, not user, but because of normalisation we have access to the user associated with tweet.
