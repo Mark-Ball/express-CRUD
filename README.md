@@ -367,3 +367,79 @@ The final step is to display the user on the view for tweets. Because we have se
 {{tweet.user.name}}
 ```
 Note that we only passed tweet to the view from the show, not user, but because of normalisation we have access to the user associated with tweet.
+
+## 9. Denormalising
+
+Denormalising is the process of embedding one schema inside another. This is useful when one collection will never be accessed without another. In our example, we are embedding a comments schema inside tweets because comments will never be accessed independently of tweets.
+
+### 9.1 Set up the schema for the embedded resource
+
+As we will be creating a new collection, we must create a new schema. In our case the schema is simple as our comments will only have a single key, called comment.
+
+```Javascript
+const CommentSchema = new Schema({
+    comment: {
+        type: String,
+        required: true
+    }
+})
+```
+
+### 9.2 Embed the secondary schema in the primary schema
+
+Comments will be embedded within tweets. The following is placed in the tweets schema file:
+```Javascript
+comments: [CommentSchema]
+```
+
+### 9.3 Create form for comments
+
+This form exists on the show page for tweets. The form consists of a single textarea which passes its value under the key 'comment' to the create function.
+
+```HTML
+<h3>Write a comment</h3>
+<form method="POST" action="/tweets/comments/{{tweet._id}}">
+    <textarea name="comment"></textarea>
+    <input type="submit" value="Post"/>
+</form>
+```
+
+### 9.4 Create a comments controller and create method for comments
+
+Firstly create a comments controller in the controllers directory with the other controllers. As there is no comments model, we require in the tweets model because our comments are embedded in tweets.
+
+The create method must find the correct tweet because each comment is associated with an individual tweet. Then each comment is pushed onto the comments array. This is possible because we set up the comments in the tweets schema as an array: ```comments: [CommentSchema]```.
+
+```Javascript
+const create = async (req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+
+    const tweet = await TweetModel.findById(id);
+
+    tweet.comments.push({ comment });
+    await tweet.save();
+
+    res.redirect(`/tweets/${id}`);
+}
+```
+
+### 9.5 Create the route
+
+The route must lead to the create method in the step above. It must also correspond with the ```action``` in the form from step 9.3. Don't forget to export the create method in the comments controller.
+
+```Javascript
+router.post("/tweets/comments/:id", CommentsController.create);
+```
+
+### 9.6 Display the comments
+
+The last step is to show the comments. As our comments are embedded inside tweets, we do not need to modify the show method in the tweets controller because the tweets object is already being passed. We can simply iterate over the object and read off the new 'comments' key.
+
+```Javascript
+<ul>
+    {{#each tweet.comments}}
+    <li>{{this.comment}}</li>
+    {{/each}}
+</ul>
+```
